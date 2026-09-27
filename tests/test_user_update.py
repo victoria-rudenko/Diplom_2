@@ -2,7 +2,7 @@ import pytest
 import requests
 import uuid
 import allure
-from urls import BASE_URL
+from urls import AUTH_USER_URL
 
 
 @allure.feature("Изменение данных пользователя")
@@ -28,7 +28,7 @@ class TestUserUpdate:
             headers = {"Authorization": registered_user["access_token"]}
 
         with allure.step("Отправляем PATCH-запрос на /auth/user"):
-            response = requests.patch(f"{BASE_URL}/auth/user", json=payload, headers=headers)
+            response = requests.patch(AUTH_USER_URL, json=payload, headers=headers)
 
         with allure.step("Проверяем, что статус ответа равен 200"):
             assert response.status_code == 200
@@ -51,7 +51,7 @@ class TestUserUpdate:
             payload = {"name": "Hacker Name"}
 
         with allure.step("Отправляем PATCH-запрос на /auth/user без заголовка авторизации"):
-            response = requests.patch(f"{BASE_URL}/auth/user", json=payload)
+            response = requests.patch(AUTH_USER_URL, json=payload)
 
         with allure.step("Проверяем, что статус ответа равен 401 Unauthorized"):
             assert response.status_code == 401

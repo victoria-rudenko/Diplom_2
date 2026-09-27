@@ -1,7 +1,7 @@
 import pytest
 import requests
 import allure
-from urls import BASE_URL
+from urls import ORDERS_URL
 
 
 @allure.feature("Создание заказа")
@@ -16,7 +16,7 @@ class TestOrderCreation:
             payload = {"ingredients": ingredient_ids}
 
         with allure.step("Отправляем POST-запрос на /orders с заголовком авторизации"):
-            response = requests.post(f"{BASE_URL}/orders", json=payload, headers=auth_headers)
+            response = requests.post(ORDERS_URL, json=payload, headers=auth_headers)
 
         with allure.step("Проверяем, что статус ответа равен 200"):
             assert response.status_code == 200
@@ -35,7 +35,7 @@ class TestOrderCreation:
             payload = {"ingredients": ingredient_ids}
 
         with allure.step("Отправляем POST-запрос на /orders без заголовка авторизации"):
-            response = requests.post(f"{BASE_URL}/orders", json=payload)
+            response = requests.post(ORDERS_URL, json=payload)
 
         with allure.step("Проверяем, что статус ответа равен 200 (гостевой заказ разрешён)"):
             assert response.status_code == 200, f"Ожидался 200, получен {response.status_code}. Ответ: {response.text}"
@@ -54,7 +54,7 @@ class TestOrderCreation:
             payload = {"ingredients": []}
 
         with allure.step("Отправляем POST-запрос на /orders с заголовком авторизации"):
-            response = requests.post(f"{BASE_URL}/orders", json=payload, headers=auth_headers)
+            response = requests.post(ORDERS_URL, json=payload, headers=auth_headers)
 
         with allure.step("Проверяем, что статус ответа равен 400 Bad Request"):
             assert response.status_code == 400
@@ -72,7 +72,7 @@ class TestOrderCreation:
             payload = {"ingredients": ["invalid_hash_12345"]}
 
         with allure.step("Отправляем POST-запрос на /orders с заголовком авторизации"):
-            response = requests.post(f"{BASE_URL}/orders", json=payload, headers=auth_headers)
+            response = requests.post(ORDERS_URL, json=payload, headers=auth_headers)
 
         with allure.step("Проверяем, что статус ответа равен 500 Internal Server Error"):
             assert response.status_code == 500

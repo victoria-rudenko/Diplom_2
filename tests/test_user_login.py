@@ -1,7 +1,7 @@
 import pytest
 import requests
 import allure
-from urls import BASE_URL
+from urls import LOGIN_URL
 
 
 @allure.feature("Авторизация пользователя")
@@ -19,7 +19,7 @@ class TestUserLogin:
             }
 
         with allure.step("Отправляем POST-запрос на /auth/login"):
-            response = requests.post(f"{BASE_URL}/auth/login", json=payload)
+            response = requests.post(LOGIN_URL, json=payload)
 
         with allure.step("Проверяем, что статус ответа равен 200"):
             assert response.status_code == 200
@@ -41,7 +41,7 @@ class TestUserLogin:
             }
 
         with allure.step("Отправляем POST-запрос на /auth/login"):
-            response = requests.post(f"{BASE_URL}/auth/login", json=payload)
+            response = requests.post(LOGIN_URL, json=payload)
 
         with allure.step("Проверяем, что статус ответа равен 401 Unauthorized"):
             assert response.status_code == 401

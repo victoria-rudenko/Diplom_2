@@ -1,7 +1,7 @@
 import pytest
 import requests
 import allure
-from urls import BASE_URL
+from urls import ORDERS_URL
 
 
 @allure.feature("Получение заказов пользователя")
@@ -13,7 +13,7 @@ class TestGetOrders:
     def test_get_orders_with_auth(self, auth_headers):
         """Получение заказов конкретного пользователя (авторизованный)"""
         with allure.step("Отправляем GET-запрос на /orders с заголовком авторизации"):
-            response = requests.get(f"{BASE_URL}/orders", headers=auth_headers)
+            response = requests.get(ORDERS_URL, headers=auth_headers)
 
         with allure.step("Проверяем, что статус ответа равен 200"):
             assert response.status_code == 200
@@ -28,7 +28,7 @@ class TestGetOrders:
     def test_get_orders_without_auth(self):
         """Получение заказов конкретного пользователя (неавторизованный)"""
         with allure.step("Отправляем GET-запрос на /orders без заголовка авторизации"):
-            response = requests.get(f"{BASE_URL}/orders")
+            response = requests.get(ORDERS_URL)
 
         with allure.step("Проверяем, что статус ответа равен 401 Unauthorized"):
             assert response.status_code == 401

@@ -2,7 +2,7 @@ import pytest
 import requests
 import uuid
 import allure
-from urls import BASE_URL
+from urls import REGISTER_URL
 
 
 # На уровне класса — группировка по фиче
@@ -22,7 +22,7 @@ class TestUserRegistration:
             }
 
         with allure.step("Отправляем POST-запрос на /auth/register"):
-            response = requests.post(f"{BASE_URL}/auth/register", json=payload)
+            response = requests.post(REGISTER_URL, json=payload)
 
         with allure.step("Проверяем статус ответа"):
             assert response.status_code == 200
@@ -44,7 +44,7 @@ class TestUserRegistration:
             }
 
         with allure.step("Отправляем POST-запрос"):
-            response = requests.post(f"{BASE_URL}/auth/register", json=payload)
+            response = requests.post(REGISTER_URL, json=payload)
 
         with allure.step("Проверяем, что получен 403 или 400"):
             assert response.status_code in [403, 400]
@@ -64,7 +64,7 @@ class TestUserRegistration:
             }
 
         with allure.step("Отправляем запрос без поля name"):
-            response = requests.post(f"{BASE_URL}/auth/register", json=payload)
+            response = requests.post(REGISTER_URL, json=payload)
 
         with allure.step("Проверяем код ответа"):
             assert response.status_code in [400, 403, 500]
