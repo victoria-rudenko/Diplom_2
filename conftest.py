@@ -1,8 +1,8 @@
 import pytest
 import requests
 import uuid
+from urls import REGISTER_URL, INGREDIENTS_URL
 
-BASE_URL = "https://stellarburgers.education-services.ru/api"
 
 
 @pytest.fixture(scope="module")
@@ -14,7 +14,7 @@ def registered_user():
         "password": "testpassword123",
         "name": f"Test User {random_id}"
     }
-    response = requests.post(f"{BASE_URL}/auth/register", json=user_data)
+    response = requests.post(REGISTER_URL, json=user_data)
 
     assert response.status_code == 200, f"Failed to register user: {response.text}"
     data = response.json()
@@ -29,7 +29,7 @@ def registered_user():
 @pytest.fixture(scope="module")
 def ingredient_ids():
     """Фикстура для получения списка валидных ID ингредиентов"""
-    response = requests.get(f"{BASE_URL}/ingredients")
+    response = requests.get(INGREDIENTS_URL)
     assert response.status_code == 200, f"Failed to get ingredients: {response.text}"
     data = response.json()
     # Берем первые два ингредиента для тестов
