@@ -1,46 +1,34 @@
 import pytest
 import requests
-import uuid
 import allure
+import uuid
 from urls import REGISTER_URL
 
 
-# На уровне класса — группировка по фиче
 @allure.feature("Регистрация пользователя")
 @allure.tag("auth", "register")
 class TestUserRegistration:
 
-    @allure.title("Создание уникального пользователя")
-    @allure.description("Проверяет, что можно зарегистрировать нового пользователя с уникальным email")
-    def test_register_unique_user(self):
-        with allure.step("Генерируем уникальные данные"):
-            random_id = str(uuid.uuid4())[:8]
-            payload = {
-                "email": f"unique_{random_id}@ya.ru",
-                "password": "testpassword123",
-                "name": f"Unique User {random_id}"
-            }
+    @allure.title("Создание уникального пользователя с последующей очисткой")
+    @allure.description("Проверяет, что можно зарегистрировать нового пользователя, и удаляет его после теста")
+    def test_register_unique_user(self, created_user):
+        with allure.step("Пользователь успешно создан через фикстуру"):
+            # Внутри фикстуры уже проверено что status_code == 200 и success == True
+            pass
 
-        with allure.step("Отправляем POST-запрос на /auth/register"):
-            response = requests.post(REGISTER_URL, json=payload)
-
-        with allure.step("Проверяем статус ответа"):
-            assert response.status_code == 200
-
-        with allure.step("Проверяем наличие токенов в ответе"):
-            data = response.json()
-            assert data["success"] is True
-            assert "accessToken" in data
-            assert "refreshToken" in data
+        with allure.step("Проверяем наличие токенов в данных от фикстуры"):
+            assert created_user["access_token"] is not None
+            assert created_user["refresh_token"] is not None
+            assert created_user["user"]["email"].startswith("test_")
 
     @allure.title("Попытка создать уже существующего пользователя")
     @allure.description("Проверяет, что сервер вернёт ошибку при повторной регистрации")
-    def test_register_existing_user(self, registered_user):
+    def test_register_existing_user(self, created_user):
         with allure.step("Формируем payload с данными уже зарегистрированного пользователя"):
             payload = {
-                "email": registered_user["user"]["email"],
-                "password": registered_user["user"]["password"],
-                "name": registered_user["user"]["name"]
+                "email": created_user["user"]["email"],
+                "password": created_user["user"]["password"],
+                "name": created_user["user"]["name"]
             }
 
         with allure.step("Отправляем POST-запрос"):
